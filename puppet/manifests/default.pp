@@ -36,21 +36,21 @@ class install_mysql {
     config_hash => { 'root_password' => '' }
   }
 
-  database { $ar_databases:
-    ensure  => present,
-    charset => 'utf8',
-    require => Class['mysql::server']
-  }
+  #database { $ar_databases:
+  #  ensure  => present,
+  #  charset => 'utf8',
+  #  require => Class['mysql::server']
+  #}
 
-  database_user { 'rails@localhost':
-    ensure  => present,
-    require => Class['mysql::server']
-  }
+  #database_user { 'rails@localhost':
+  #  ensure  => present,
+  #  require => Class['mysql::server']
+  #}
 
-  database_grant { ['rails@localhost/activerecord_unittest', 'rails@localhost/activerecord_unittest2']:
-    privileges => ['all'],
-    require    => Database_user['rails@localhost']
-  }
+  #database_grant { ['rails@localhost/activerecord_unittest', 'rails@localhost/activerecord_unittest2']:
+  #  privileges => ['all'],
+  #  require    => Database_user['rails@localhost']
+  #}
 
   package { 'libmysqlclient15-dev':
     ensure => installed
@@ -65,22 +65,22 @@ class install_postgres {
 
   class { 'postgresql::server': }
 
-  pg_database { $ar_databases:
-    ensure   => present,
-    encoding => 'UTF8',
-    require  => Class['postgresql::server']
-  }
+  #pg_database { $ar_databases:
+  #  ensure   => present,
+  #  encoding => 'UTF8',
+  #  require  => Class['postgresql::server']
+  #}
 
-  pg_user { 'rails':
-    ensure  => present,
-    require => Class['postgresql::server']
-  }
+  #pg_user { 'rails':
+  #  ensure  => present,
+  #  require => Class['postgresql::server']
+  #}
 
-  pg_user { 'vagrant':
-    ensure    => present,
-    superuser => true,
-    require   => Class['postgresql::server']
-  }
+  #pg_user { 'vagrant':
+  #  ensure    => present,
+  #  superuser => true,
+  #  require   => Class['postgresql::server']
+  #}
 
   package { 'libpq-dev':
     ensure => installed
@@ -140,7 +140,16 @@ exec { 'install_ruby':
   require => Exec['install_rvm']
 }
 
-exec { "${as_vagrant} 'gem install bundler --no-rdoc --no-ri'":
+exec { "${as_vagrant} 'gem install bundler'":
   creates => "${home}/.rvm/bin/bundle",
   require => Exec['install_ruby']
+}
+
+exec { 'install_rails':
+  command => "${as_vagrant} 'gem install rails --version=4.0.0.beta1'",
+  require => Exec['install_ruby']
+}
+
+exec { "${as_vagrant} 'gem install rspec'":
+  require => Exec['install_rails']
 }
