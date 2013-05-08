@@ -146,7 +146,7 @@ exec { "${as_vagrant} 'gem install bundler'":
 }
 
 exec { 'install_rails':
-  command => "${as_vagrant} 'gem install rails --version=4.0.0.beta1'",
+  command => "${as_vagrant} 'gem install rails'",
   require => Exec['install_ruby']
 }
 
